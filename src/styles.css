@@ -50,6 +50,7 @@ textarea {
 
 h1,
 h2,
+h3,
 p {
   margin: 0;
 }
@@ -446,6 +447,85 @@ h2 {
   line-height: 1.5;
 }
 
+.pdf-workbench {
+  display: grid;
+  gap: 12px;
+  width: min(900px, 100%);
+  border: 1px solid #d8d1c6;
+  border-radius: 8px;
+  background: #fffdf8;
+  padding: 14px;
+  text-align: left;
+}
+
+.pdf-workbench-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pdf-workbench-header svg {
+  color: #3d745a;
+  flex: 0 0 auto;
+}
+
+.pdf-workbench h3 {
+  color: #1d2a24;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.pdf-workbench-header p {
+  color: #69786f;
+  font-size: 13px;
+}
+
+.pdf-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pdf-action {
+  display: grid;
+  gap: 5px;
+  min-height: 118px;
+  border: 1px solid #d9d3c8;
+  border-radius: 8px;
+  background: #f8f5ee;
+  color: #1d2a24;
+  padding: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pdf-action:hover:not(:disabled) {
+  border-color: #3d745a;
+  background: #f1f8f3;
+}
+
+.pdf-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pdf-action span {
+  font-weight: 800;
+}
+
+.pdf-action strong {
+  color: #3d745a;
+  font-size: 11px;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.pdf-action p {
+  color: #617268;
+  font-size: 12px;
+  line-height: 1.36;
+}
+
 .workflow-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(150px, 1fr));
@@ -648,6 +728,10 @@ h2 {
   }
 
   .workflow-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pdf-action-grid {
     grid-template-columns: 1fr;
   }
 }

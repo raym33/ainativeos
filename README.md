@@ -76,6 +76,19 @@ El repo esta clonado en `../work/raym33-r` y se instalo en editable dentro de `.
 La UI carga `public/r-catalog.json` para mostrar un explorador visual de skills/tools.
 Tambien muestra un panel de permisos con las skills listas para usar y las familias sensibles bloqueadas.
 
+## Workbench PDF
+
+La pantalla inicial incluye un vertical de documentos con acciones guiadas:
+
+- resumir PDFs con extraccion de texto u OCR;
+- convertir escaneados en PDFs buscables;
+- unir varios PDFs;
+- extraer paginas o rangos;
+- generar informes PDF desde texto o Markdown;
+- rotar o comprimir documentos.
+
+Cada accion pide rutas y opciones antes de ejecutar `r_call_tool`. El flujo recomendado es crear siempre un archivo de salida nuevo y conservar los originales.
+
 Prueba rapida:
 
 ```bash

@@ -20,6 +20,19 @@ R no debe sentirse como otro chat. Debe sentirse como una mesa de trabajo local:
 4. Datos: CSV, JSON, YAML, SQL ligero y estadísticas.
 5. Código: revisar repos, explicar errores, usar git y generar parches.
 
+## Vertical PDF
+
+Primer vertical de producto para usuarios no tecnicos:
+
+- Resumir PDF: `ocr.extract_text_from_pdf` como punto de entrada porque cubre texto y escaneados.
+- OCR buscable: `ocr.ocr_to_searchable_pdf`.
+- Unir PDFs: `pdftools.pdf_merge`.
+- Extraer paginas: `pdftools.pdf_extract`.
+- Generar informe: `pdf.generate_pdf` o `pdf.markdown_to_pdf`.
+- Arreglar documentos: `pdftools.pdf_rotate` y `pdftools.pdf_compress`.
+
+Reglas UX: pedir rutas antes de ejecutar, no sobrescribir originales, crear salidas nuevas y enseñar la tool exacta que se va a usar.
+
 ## Arquitectura recomendada
 
 - UI local: experiencia principal para usuarios no técnicos.
@@ -53,6 +66,7 @@ Permisos ideales:
 2. Explorador visual de skills y tools. Hecho en este starter con `public/r-catalog.json`.
 3. Perfil visible de permisos y skills bloqueadas. Hecho en este starter.
 4. Historial visible de ejecuciones por sesion. Hecho en este starter.
-5. Resultados persistentes, favoritos y exportacion.
-6. Firecrawl como búsqueda/extracción web principal.
-7. Browser-use como herramienta avanzada para navegación interactiva.
+5. Vertical PDF con acciones guiadas. Hecho en este starter.
+6. Resultados persistentes, favoritos y exportacion.
+7. Firecrawl como búsqueda/extracción web principal.
+8. Browser-use como herramienta avanzada para navegación interactiva.

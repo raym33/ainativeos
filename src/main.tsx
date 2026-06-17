@@ -92,6 +92,51 @@ const TRUST_POINTS = [
   "Web con fuentes y enlaces",
 ];
 
+const PDF_WORKFLOWS = [
+  {
+    title: "Resumir PDF",
+    tool: "ocr.extract_text_from_pdf",
+    description: "Extrae texto, detecta si necesita OCR y devuelve resumen con puntos clave.",
+    prompt:
+      "Quiero resumir un PDF local. Busca primero tools de R para PDF/OCR, prioriza ocr.extract_text_from_pdf si el documento puede estar escaneado, pideme la ruta del archivo y no ejecutes nada hasta tenerla. Despues resume el contenido con puntos clave, posibles acciones y dudas abiertas.",
+  },
+  {
+    title: "OCR buscable",
+    tool: "ocr.ocr_to_searchable_pdf",
+    description: "Convierte un escaneado en PDF con texto seleccionable.",
+    prompt:
+      "Quiero convertir un PDF escaneado en un PDF buscable. Usa r_search_tools para confirmar la tool OCR adecuada, pideme ruta de entrada, ruta de salida e idioma, y luego llama r_call_tool con ocr.ocr_to_searchable_pdf solo cuando tenga esos datos.",
+  },
+  {
+    title: "Unir PDFs",
+    tool: "pdftools.pdf_merge",
+    description: "Combina varios PDFs en un solo archivo.",
+    prompt:
+      "Quiero unir varios PDFs locales. Busca la tool de R para merge de PDFs, pideme la lista de rutas en orden y la ruta de salida, verifica que no vas a sobrescribir originales sin permiso, y despues prepara la llamada a pdftools.pdf_merge.",
+  },
+  {
+    title: "Separar páginas",
+    tool: "pdftools.pdf_extract",
+    description: "Extrae rangos concretos o divide documentos grandes.",
+    prompt:
+      "Quiero extraer paginas de un PDF. Busca las tools de pdftools, pideme ruta del PDF, paginas o rangos y ruta de salida. No modifiques el original; prepara una llamada segura a pdftools.pdf_extract.",
+  },
+  {
+    title: "Informe PDF",
+    tool: "pdf.generate_pdf",
+    description: "Genera un informe desde texto o Markdown.",
+    prompt:
+      "Quiero generar un informe PDF. Busca las tools de R para crear PDFs desde Markdown/texto, pideme titulo, contenido o ruta Markdown, plantilla y ruta de salida. Usa pdf.generate_pdf o pdf.markdown_to_pdf segun convenga.",
+  },
+  {
+    title: "Rotar/comprimir",
+    tool: "pdftools.pdf_rotate",
+    description: "Arregla orientación o reduce tamaño del documento.",
+    prompt:
+      "Quiero arreglar un PDF rotando paginas o reduciendo su tamaño. Busca tools de pdftools para rotate/compress, pideme ruta, operacion exacta, paginas afectadas y ruta de salida. Mantén intacto el original.",
+  },
+];
+
 function App() {
   const agent = useEveAgent({ host: "" });
   const [input, setInput] = useState("");
@@ -240,6 +285,30 @@ function App() {
                   R aporta 82 skills y 560 tools; Eve las busca y ejecuta bajo demanda para que el modelo local no se ahogue con todo el catálogo.
                 </p>
               </div>
+              <section className="pdf-workbench" aria-label="Documentos PDF">
+                <div className="pdf-workbench-header">
+                  <FileText size={18} />
+                  <div>
+                    <h3>Documentos PDF</h3>
+                    <p>OCR, resumen, union, extraccion y generacion de informes con R local.</p>
+                  </div>
+                </div>
+                <div className="pdf-action-grid">
+                  {PDF_WORKFLOWS.map((workflow) => (
+                    <button
+                      className="pdf-action"
+                      disabled={agent.status !== "ready"}
+                      key={workflow.title}
+                      onClick={() => sendMessage(workflow.prompt)}
+                      type="button"
+                    >
+                      <span>{workflow.title}</span>
+                      <strong>{workflow.tool}</strong>
+                      <p>{workflow.description}</p>
+                    </button>
+                  ))}
+                </div>
+              </section>
               <div className="workflow-grid">
                 {WORKFLOWS.map((workflow) => (
                   <button
