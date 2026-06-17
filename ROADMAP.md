@@ -41,8 +41,10 @@ Status: implemented in this starter.
 
 ## Phase 3: Research Workflows
 
-- Firecrawl integration for page extraction.
-- Source cards with title, URL, snippet, and fetch status.
+- Firecrawl integration for page extraction. **Implemented (optional).**
+- Source cards with title, URL, snippet, provider, quality, rank, and fetch status. **Implemented.**
+- `web_research`: search, read top sources, and return cited research material. **Implemented.**
+- First-screen Web Research actions for quick, deep, and site-specific research. **Implemented.**
 - Research collections.
 - Export to Markdown, PDF, and clipboard-safe text.
 - Better handling for weak fallback search providers.

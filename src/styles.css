@@ -90,6 +90,7 @@ h3 {
 .forge-panel,
 .health-panel,
 .pdf-workbench,
+.research-workbench,
 .workflow-card,
 .system-strip div,
 .tool-summary span {
@@ -228,7 +229,8 @@ h3 {
 .tool-log-header,
 .permission-title,
 .health-header,
-.pdf-workbench-header {
+.pdf-workbench-header,
+.research-workbench-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -697,33 +699,39 @@ h3 {
   opacity: 0.55;
 }
 
-.pdf-workbench {
+.pdf-workbench,
+.research-workbench {
   display: grid;
   gap: 12px;
   padding: 14px;
 }
 
-.pdf-workbench-header {
+.pdf-workbench-header,
+.research-workbench-header {
   justify-content: flex-start;
 }
 
-.pdf-workbench-header svg {
+.pdf-workbench-header svg,
+.research-workbench-header svg {
   color: #3e6f64;
   flex: 0 0 auto;
 }
 
-.pdf-workbench-header p {
+.pdf-workbench-header p,
+.research-workbench-header p {
   color: #66717b;
   font-size: 13px;
 }
 
-.pdf-action-grid {
+.pdf-action-grid,
+.research-action-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
-.pdf-action {
+.pdf-action,
+.research-action {
   display: grid;
   gap: 6px;
   min-height: 112px;
@@ -737,6 +745,7 @@ h3 {
 }
 
 .pdf-action:hover:not(:disabled),
+.research-action:hover:not(:disabled),
 .workflow-card:hover:not(:disabled),
 .quickbar button:hover:not(:disabled) {
   border-color: #3e6f64;
@@ -745,6 +754,7 @@ h3 {
 }
 
 .pdf-action:disabled,
+.research-action:disabled,
 .workflow-card:disabled,
 .quickbar button:disabled {
   cursor: not-allowed;
@@ -752,11 +762,13 @@ h3 {
 }
 
 .pdf-action span,
+.research-action span,
 .workflow-card span {
   font-weight: 800;
 }
 
-.pdf-action strong {
+.pdf-action strong,
+.research-action strong {
   color: #3e6f64;
   font-size: 11px;
   line-height: 1.2;
@@ -764,6 +776,7 @@ h3 {
 }
 
 .pdf-action p,
+.research-action p,
 .workflow-card p {
   color: #66717b;
   font-size: 12px;
@@ -969,6 +982,7 @@ h3 {
 
   .health-grid,
   .pdf-action-grid,
+  .research-action-grid,
   .workflow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1012,6 +1026,7 @@ h3 {
   .system-strip,
   .health-grid,
   .pdf-action-grid,
+  .research-action-grid,
   .workflow-grid {
     grid-template-columns: 1fr;
   }

@@ -91,14 +91,14 @@ const WORKFLOWS: Array<{ icon: LucideIcon } & LocalizedEntry> = [
       description: "Search, read sources, compare, and summarize.",
       hint: "Search the web and return source-backed notes.",
       prompt:
-        "Do a short web research pass on recent LM Studio updates. Use web search, read relevant sources, and return a concise summary with links.",
+        "Do a short web research pass on recent LM Studio updates. Use web_research, read the best sources, and return a concise summary with citations and links.",
     },
     es: {
       title: "Investigacion web",
       description: "Busca, lee fuentes, compara y resume.",
       hint: "Busca en la web y devuelve notas respaldadas por fuentes.",
       prompt:
-        "Haz una breve investigacion web sobre actualizaciones recientes de LM Studio. Usa busqueda web, lee fuentes relevantes y devuelve un resumen conciso con enlaces.",
+        "Haz una breve investigacion web sobre actualizaciones recientes de LM Studio. Usa web_research, lee las mejores fuentes y devuelve un resumen conciso con citas y enlaces.",
     },
   },
   {
@@ -298,6 +298,60 @@ const PDF_WORKFLOWS: Array<{ tool: string } & LocalizedEntry> = [
       hint: "Corrige la orientacion o reduce el tamano en una nueva salida.",
       prompt:
         "Quiero reparar un PDF rotando paginas o reduciendo el tamano del archivo. Busca en pdftools herramientas para rotar o comprimir, pide ruta, operacion exacta, paginas afectadas y ruta de salida. Manten intacto el original.",
+    },
+  },
+];
+
+const RESEARCH_WORKFLOWS: Array<{ mode: string } & LocalizedEntry> = [
+  {
+    mode: "quick",
+    en: {
+      title: "Quick brief",
+      description: "Find and read the top sources, then answer with links.",
+      hint: "Best for current facts, product updates, and news checks.",
+      prompt:
+        "Run web_research for this question: What changed recently in local AI desktop apps? Read the top 3 sources, then write a concise brief with citations and links.",
+    },
+    es: {
+      title: "Resumen rapido",
+      description: "Encuentra y lee las mejores fuentes, luego responde con enlaces.",
+      hint: "Ideal para hechos actuales, novedades de producto y noticias.",
+      prompt:
+        "Ejecuta web_research para esta pregunta: Que ha cambiado recientemente en las apps de IA local de escritorio? Lee las 3 mejores fuentes y escribe un resumen conciso con citas y enlaces.",
+    },
+  },
+  {
+    mode: "deep",
+    en: {
+      title: "Deep research",
+      description: "Collect more candidates, read several sources, and compare evidence.",
+      hint: "Use this when the answer needs stronger source quality.",
+      prompt:
+        "Run a deeper web_research pass. Ask me for the exact research question if needed, collect up to 8 results, read the top 5, compare the evidence, and clearly mark weak or missing sources.",
+    },
+    es: {
+      title: "Investigacion profunda",
+      description: "Reune mas candidatos, lee varias fuentes y compara evidencia.",
+      hint: "Usalo cuando la respuesta necesite fuentes mas solidas.",
+      prompt:
+        "Ejecuta una investigacion web_research mas profunda. Pideme la pregunta exacta si hace falta, recoge hasta 8 resultados, lee los 5 mejores, compara la evidencia y marca claramente fuentes debiles o ausentes.",
+    },
+  },
+  {
+    mode: "site",
+    en: {
+      title: "Specific site",
+      description: "Search inside a chosen domain and read the actual pages.",
+      hint: "Useful for newspapers, docs, government sites, and vendors.",
+      prompt:
+        "I want to research a specific website. Ask me for the domain and question, then run web_research with a site: query, read the strongest pages, and answer with citations.",
+    },
+    es: {
+      title: "Sitio concreto",
+      description: "Busca dentro de un dominio elegido y lee las paginas reales.",
+      hint: "Util para periodicos, docs, webs publicas y proveedores.",
+      prompt:
+        "Quiero investigar una web concreta. Pideme el dominio y la pregunta, luego ejecuta web_research con una consulta site:, lee las paginas mas solidas y responde con citas.",
     },
   },
 ];
@@ -570,6 +624,36 @@ function App() {
                 >
                   {skillForgeAction.title}
                 </button>
+              </section>
+
+              <section className="research-workbench" aria-label={t(lang, "research.title")}>
+                <div className="research-workbench-header">
+                  <Globe2 size={18} />
+                  <div>
+                    <h3>{t(lang, "research.title")}</h3>
+                    <p>{t(lang, "research.copy")}</p>
+                  </div>
+                </div>
+                <div className="research-action-grid">
+                  {RESEARCH_WORKFLOWS.map((workflow) => {
+                    const copy = workflow[lang];
+                    return (
+                      <button
+                        className="research-action tooltip-control"
+                        data-tooltip={copy.hint}
+                        disabled={agent.status !== "ready"}
+                        key={workflow.mode}
+                        onClick={() => sendMessage(copy.prompt)}
+                        title={copy.hint}
+                        type="button"
+                      >
+                        <span>{copy.title}</span>
+                        <strong>{workflow.mode}</strong>
+                        <p>{copy.description}</p>
+                      </button>
+                    );
+                  })}
+                </div>
               </section>
 
               <section className="pdf-workbench" aria-label={t(lang, "workbench.pdf.title")}>
@@ -1202,6 +1286,9 @@ function localizedHealthDetail(check: HealthCheck, lang: Lang) {
   }
   if (check.key === "search" && check.detail === "DuckDuckGo fallback only") {
     return t(lang, "health.detail.searchFallback");
+  }
+  if (check.key === "reader" && check.detail === "Direct page extraction only") {
+    return t(lang, "health.detail.readerDirect");
   }
   if (check.key === "catalog" && check.detail === "Run npm run r:catalog") {
     return t(lang, "health.detail.catalogMissing");

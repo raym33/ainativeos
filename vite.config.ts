@@ -140,6 +140,15 @@ async function buildHealth(env: Record<string, string>, root: string) {
   });
 
   checks.push({
+    key: "reader",
+    label: "Page reader",
+    state: env.FIRECRAWL_API_KEY || env.FIRECRAWL_BASE_URL ? "ready" : "info",
+    detail: env.FIRECRAWL_API_KEY || env.FIRECRAWL_BASE_URL
+      ? "Firecrawl extraction configured"
+      : "Direct page extraction only",
+  });
+
+  checks.push({
     key: "workspace",
     label: "Workspace",
     state: "info",

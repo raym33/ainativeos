@@ -26,6 +26,7 @@ The UI is bilingual (Spanish / English) with a language toggle.
 - Eve agent runtime with streaming and tool calls.
 - Confirmation gate + human-in-the-loop approval before outward or irreversible actions (e.g. sending email).
 - Web search through SearXNG, Brave, Tavily, or DuckDuckGo Instant Answer fallback.
+- Research workflow with normalized source cards, source quality, page reading, and optional Firecrawl extraction.
 - `raym33/r` bridge with catalog search and targeted tool execution.
 - Spanish legal research via the local Lexia RAG service (`lexia_*` tools) and BOE lookup (`boe_query`).
 - Guided PDF workbench for OCR, summaries, merging, page extraction, repair, and report generation.
@@ -98,6 +99,22 @@ TAVILY_API_KEY=...
 ```
 
 If no provider is configured, the app uses DuckDuckGo Instant Answer as a lightweight fallback. That is useful for smoke tests, but it is not a full web search replacement.
+
+For deeper page extraction, configure Firecrawl:
+
+```bash
+FIRECRAWL_API_KEY=...
+# Optional for self-hosted Firecrawl:
+FIRECRAWL_BASE_URL=https://api.firecrawl.dev
+```
+
+Research tools:
+
+- `web_search`: finds candidate links and returns normalized source cards.
+- `fetch_page`: reads one URL and returns clean Markdown.
+- `web_research`: searches, reads the best sources, and returns cited research material.
+
+For serious answers, AI Native OS should read sources before answering instead of relying on snippets alone.
 
 ## Run
 

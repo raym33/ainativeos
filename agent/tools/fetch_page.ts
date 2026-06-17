@@ -1,42 +1,27 @@
 import { defineTool } from "eve/tools";
 import { z } from "zod";
+import { readPage } from "../lib/webResearch.js";
 
 export default defineTool({
   description:
-    "Descarga una pagina web concreta y devuelve texto limpio. Usala despues de web_search cuando necesites leer una fuente.",
+    "Read a specific web page and return clean Markdown for source-grounded research. Uses Firecrawl when configured, otherwise direct HTML/text extraction. Use after web_search before writing serious cited answers.",
   inputSchema: z.object({
-    url: z.string().url().describe("URL de la pagina que hay que leer."),
+    url: z.string().url().describe("URL of the page to read."),
   }),
   outputSchema: z.object({
     url: z.string(),
     title: z.string().optional(),
+    extractor: z.enum(["firecrawl", "direct"]),
+    markdown: z.string(),
     text: z.string(),
+    citationHint: z.string(),
   }),
   async execute({ url }) {
-    const response = await fetch(url, {
-      headers: {
-        Accept: "text/html, text/plain;q=0.9, */*;q=0.5",
-        "User-Agent": "Eve LM Studio local research agent",
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
-    }
-
-    const html = await response.text();
-    const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim();
-    const text = html
-      .replace(/<script[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style[\s\S]*?<\/style>/gi, " ")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 12000);
-
-    return { url, title, text };
+    const page = await readPage(url);
+    return {
+      ...page,
+      text: page.markdown,
+      citationHint: `Cite this source as: ${page.title ? `${page.title} - ` : ""}${page.url}`,
+    };
   },
 });
