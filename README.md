@@ -1,20 +1,38 @@
-# R Workbench
+# AI Native OS
 
-A local-first AI workbench for LM Studio, Eve, web search, and the `raym33/r` skill catalog.
+**Private local AI assistant for documents, research, and admin work.** — [ainative.so](https://ainative.so)
 
-The goal is to feel less like a generic chat app and more like a small operating system for personal automation: clear status, visible tools, safe defaults, and task-first controls.
+- Runs on your own machine with LM Studio / Ollama-compatible local models.
+- No cloud required for core workflows.
+- Human approval before any risky or outward-facing action.
+
+AI Native OS is the local-first, permission-aware layer on top of Eve, LM Studio, and the `raym33/r` skill catalog. It feels less like a generic chat app and more like a small operating system for personal automation: clear status, visible tools, a workspace you control, and safe defaults.
+
+## What can it do?
+
+- Summarize a folder of PDFs into a report.
+- Turn scanned PDFs into searchable PDFs.
+- Search the web and write cited research notes.
+- Look up Spanish legislation (BOE) and local legal sources (Lexia) with citations.
+- Draft emails and documents — without sending anything automatically.
+- Organize local files safely, preserving the originals.
+- Create new local tools through Skill Forge, but only after review.
+
+The UI is bilingual (Spanish / English) with a language toggle.
 
 ## Features
 
 - Local model routing through LM Studio's OpenAI-compatible server.
 - Eve agent runtime with streaming and tool calls.
+- Confirmation gate + human-in-the-loop approval before outward or irreversible actions (e.g. sending email).
 - Web search through SearXNG, Brave, Tavily, or DuckDuckGo Instant Answer fallback.
 - `raym33/r` bridge with catalog search and targeted tool execution.
+- Spanish legal research via the local Lexia RAG service (`lexia_*` tools) and BOE lookup (`boe_query`).
 - Guided PDF workbench for OCR, summaries, merging, page extraction, repair, and report generation.
-- Skill Forge for drafting missing R skills when no existing tool fits.
+- Skill Forge with a reviewed draft → approve → install pipeline (nothing is installed or executed automatically).
 - Permission panel that shows ready and blocked skill families.
 - Session tool history for auditability.
-- Minimal responsive UI with button tooltips.
+- Minimal, responsive, bilingual UI with button tooltips.
 - Optional Docker runtime for isolating Node, Eve, Python, and R dependencies.
 
 ## Requirements
@@ -184,15 +202,12 @@ Drafts are ignored by git by default and are never installed or executed automat
 
 ## Safety
 
-The bridge blocks sensitive skill families by default, including `ssh`, `docker`, `email`, `power`, `wifi`, `clipboard`, and similar capabilities.
+Two layers protect the user:
 
-To unlock them for the backend process:
+- **Blocked skills.** The bridge blocks sensitive skill families by default, including `ssh`, `docker`, `power`, `wifi`, `clipboard`, `social`, and similar capabilities. Unlock them for the backend process with `R_BRIDGE_ALLOW_DANGEROUS=1 npm run start` (keep this disabled for daily use).
+- **Confirmation gate + approval.** Outward-facing or irreversible tools (such as `email.send_email`, social posts, and HTTP writes) are *guarded*: they never run automatically. The agent shows a plain-language preview and the app requires an explicit Approve / Cancel before anything is sent. The guarded set is additive and cannot be weakened by configuration.
 
-```bash
-R_BRIDGE_ALLOW_DANGEROUS=1 npm run start
-```
-
-For daily use, keep this disabled and let Eve propose a plan before actions that can modify the system.
+Generated Skill Forge skills are never installed or executed automatically — they go through a reviewed approve → install pipeline. Originals are preserved by default.
 
 ## Documentation
 

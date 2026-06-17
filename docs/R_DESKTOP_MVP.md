@@ -4,7 +4,7 @@ Objective: turn `raym33/r` into a local-first desktop workbench for people with 
 
 ## Positioning
 
-R Workbench should not feel like another chat window. It should feel like a local operating surface:
+AI Native OS should not feel like another chat window. It should feel like a local operating surface:
 
 - understands user files and documents;
 - searches and reads the web with sources;

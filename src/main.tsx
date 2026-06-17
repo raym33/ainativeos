@@ -409,7 +409,7 @@ function App() {
       <section className="sidebar" aria-label={t(lang, "aria.systemStatus")}>
         <div className="brand-lockup">
           <p className="eyebrow">{t(lang, "brand.eyebrow")}</p>
-          <h1>R Workbench</h1>
+          <h1>AI Native OS</h1>
           <span>{t(lang, "brand.subtitle")}</span>
         </div>
 

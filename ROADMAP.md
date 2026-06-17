@@ -1,10 +1,10 @@
 # Roadmap
 
-R Workbench is a local-first automation console for personal computers. The roadmap prioritizes trust, clarity, and useful vertical workflows before broad agent autonomy.
+AI Native OS is a local-first automation console for personal computers. The roadmap prioritizes trust, clarity, and useful vertical workflows before broad agent autonomy.
 
 ## Who it is for
 
-R Workbench targets non-technical solo professionals (freelancers and small-business owners) who want to save time on everyday tasks: drafting simple emails, messaging, organizing and saving documents, light databases, client notes, and basic legal/admin lookups. The goal is that a user can ask for something in plain language and the workbench does it, or transparently tries and shows its work. It deliberately stays simpler than general-purpose agent frameworks: fewer knobs, plain-language intents, and visible, reviewable actions over raw autonomy.
+AI Native OS targets non-technical solo professionals (freelancers and small-business owners) who want to save time on everyday tasks: drafting simple emails, messaging, organizing and saving documents, light databases, client notes, and basic legal/admin lookups. The goal is that a user can ask for something in plain language and the workbench does it, or transparently tries and shows its work. It deliberately stays simpler than general-purpose agent frameworks: fewer knobs, plain-language intents, and visible, reviewable actions over raw autonomy.
 
 ## Phase 1: Local Foundation
 

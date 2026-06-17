@@ -1,6 +1,6 @@
 # Project Structure
 
-R Workbench is intentionally small at the top level. The app is split into a UI, an Eve agent, a Python bridge, and the embedded `raym33/r` submodule.
+AI Native OS is intentionally small at the top level. The app is split into a UI, an Eve agent, a Python bridge, and the embedded `raym33/r` submodule.
 
 ```text
 .
