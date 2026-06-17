@@ -51,7 +51,7 @@ Permisos ideales:
 
 1. Panel de workflows con prompts guiados. Hecho en este starter.
 2. Explorador visual de skills y tools. Hecho en este starter con `public/r-catalog.json`.
-3. Historial de ejecuciones y resultados.
-4. Perfil de permisos por agente.
+3. Perfil visible de permisos y skills bloqueadas. Hecho en este starter.
+4. Historial de ejecuciones y resultados.
 5. Firecrawl como búsqueda/extracción web principal.
 6. Browser-use como herramienta avanzada para navegación interactiva.

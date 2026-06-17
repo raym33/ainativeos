@@ -74,6 +74,7 @@ Este starter incluye un puente a `raym33/r`:
 
 El repo esta clonado en `../work/raym33-r` y se instalo en editable dentro de `.venv`.
 La UI carga `public/r-catalog.json` para mostrar un explorador visual de skills/tools.
+Tambien muestra un panel de permisos con las skills listas para usar y las familias sensibles bloqueadas.
 
 Prueba rapida:
 
@@ -88,3 +89,5 @@ Por seguridad, el puente bloquea por defecto skills con efectos sensibles como `
 ```bash
 R_BRIDGE_ALLOW_DANGEROUS=1 npm run start
 ```
+
+Ese desbloqueo es global para el proceso del backend. Para uso diario, mantenlo desactivado y deja que Eve proponga un plan antes de ejecutar acciones que puedan modificar el sistema.

@@ -227,6 +227,10 @@ h2 {
   font-weight: 750;
 }
 
+.tool-result span.blocked {
+  color: #ffd1a6;
+}
+
 .tool-result p {
   color: rgba(248, 243, 234, 0.7);
   font-size: 12px;
@@ -246,6 +250,74 @@ h2 {
 
 .tool-result button:hover {
   background: rgba(168, 216, 191, 0.24);
+}
+
+.permission-panel {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 12px;
+}
+
+.permission-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.permission-title svg {
+  color: #ffd1a6;
+}
+
+.permission-meter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.permission-meter div {
+  display: grid;
+  gap: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 8px;
+}
+
+.permission-meter strong {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.permission-meter span,
+.permission-panel p {
+  color: rgba(248, 243, 234, 0.72);
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.permission-panel code {
+  color: #f8f3ea;
+  font-size: 11px;
+  word-break: break-word;
+}
+
+.blocked-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.blocked-list span {
+  border: 1px solid rgba(255, 209, 166, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 209, 166, 0.1);
+  color: #ffd1a6;
+  padding: 4px 7px;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .tool-log {

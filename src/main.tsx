@@ -8,6 +8,7 @@ import {
   Globe2,
   RotateCcw,
   Send,
+  ShieldAlert,
   ShieldCheck,
   Sparkles,
   Square,
@@ -132,6 +133,7 @@ function App() {
   }, []);
 
   const selectedSkillData = catalog?.skills.find((skill) => skill.name === selectedSkill);
+  const permissionSummary = useMemo(() => getPermissionSummary(catalog), [catalog]);
 
   const filteredTools = useMemo(() => {
     if (!catalog) {
@@ -219,6 +221,8 @@ function App() {
           selectedSkillData={selectedSkillData}
           setQuery={setCatalogQuery}
         />
+
+        <PermissionPanel summary={permissionSummary} />
 
         <div className="tool-log">
           <h2>Tools</h2>
@@ -407,7 +411,9 @@ function SkillExplorer({
               <div className="tool-result" key={`${tool.skill}.${tool.name}`}>
                 <div>
                   <strong>{tool.name}</strong>
-                  <span>{tool.skill}</span>
+                  <span className={tool.skillBlocked ? "blocked" : ""}>
+                    {tool.skillBlocked ? "bloqueada" : tool.skill}
+                  </span>
                 </div>
                 <p>{tool.description}</p>
                 <button onClick={() => onUseTool(tool.skill, tool)} type="button">
@@ -419,6 +425,50 @@ function SkillExplorer({
         </>
       ) : (
         <p className="skill-summary">Ejecuta `npm run r:catalog` si el catálogo no aparece.</p>
+      )}
+    </div>
+  );
+}
+
+function PermissionPanel({ summary }: { summary: PermissionSummary | null }) {
+  const visibleBlocked = summary?.blocked.slice(0, 8) ?? [];
+
+  return (
+    <div className="permission-panel">
+      <div className="permission-title">
+        <ShieldAlert size={16} />
+        <h2>Permisos</h2>
+      </div>
+
+      {summary ? (
+        <>
+          <div className="permission-meter" aria-label="Resumen de permisos">
+            <div>
+              <strong>{summary.allowedCount}</strong>
+              <span>listas</span>
+            </div>
+            <div>
+              <strong>{summary.blockedCount}</strong>
+              <span>bloqueadas</span>
+            </div>
+          </div>
+
+          <p>
+            Las skills sensibles no se ejecutan desde la UI por defecto. Para abrirlas, arranca Eve con
+            {" "}
+            <code>R_BRIDGE_ALLOW_DANGEROUS=1</code>.
+          </p>
+
+          {visibleBlocked.length ? (
+            <div className="blocked-list" aria-label="Skills bloqueadas">
+              {visibleBlocked.map((skill) => (
+                <span key={skill}>{skill}</span>
+              ))}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <p>Cargando perfil local de permisos.</p>
       )}
     </div>
   );
@@ -454,6 +504,28 @@ function statusLabel(status: string) {
     return "Error";
   }
   return "Listo";
+}
+
+type PermissionSummary = {
+  allowedCount: number;
+  blocked: string[];
+  blockedCount: number;
+};
+
+function getPermissionSummary(catalog: RCatalog | null): PermissionSummary | null {
+  if (!catalog) {
+    return null;
+  }
+
+  const blocked = catalog.blockedSkills.length
+    ? catalog.blockedSkills
+    : catalog.skills.filter((skill) => skill.blocked).map((skill) => skill.name);
+
+  return {
+    allowedCount: catalog.skillCount - blocked.length,
+    blocked,
+    blockedCount: blocked.length,
+  };
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
