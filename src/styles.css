@@ -146,7 +146,8 @@ h3 {
 .tool-result button,
 .workflow-card,
 .pdf-action,
-.skill-tabs button {
+.skill-tabs button,
+.lang-toggle button {
   transition:
     border-color 120ms ease,
     background 120ms ease,
@@ -170,6 +171,38 @@ h3 {
 .secondary-button:hover {
   border-color: #aeb8c2;
   background: #f1f4f6;
+}
+
+.lang-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  border: 1px solid #d5dbe1;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 4px;
+}
+
+.lang-toggle button {
+  min-height: 30px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #4f5963;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.lang-toggle button:hover {
+  border-color: #c8d1d8;
+  background: #f4f6f8;
+}
+
+.lang-toggle button.active {
+  border-color: #3e6f64;
+  background: #eef6f3;
+  color: #173d34;
 }
 
 .skill-panel {

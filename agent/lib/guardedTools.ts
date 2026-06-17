@@ -33,18 +33,22 @@ export function summarizeGuardedAction(
   skill: string,
   tool: string,
   params: Record<string, unknown>,
+  lang: "es" | "en" = "en",
 ): string {
   if (skill === "email" && tool === "send_email") {
-    const to = params.to ?? params.recipient ?? params.recipients ?? "the recipient";
-    const subject = params.subject ?? "(no subject)";
-    let summary = `Send an email to ${String(to)} with subject "${String(subject)}".`;
+    const to = params.to ?? params.recipient ?? params.recipients ?? (lang === "es" ? "el destinatario" : "the recipient");
+    const subject = params.subject ?? (lang === "es" ? "(sin asunto)" : "(no subject)");
+    let summary =
+      lang === "es"
+        ? `Enviar un correo a ${String(to)} con asunto "${String(subject)}".`
+        : `Send an email to ${String(to)} with subject "${String(subject)}".`;
     if (params.cc) {
       summary += ` Cc: ${String(params.cc)}.`;
     }
     const attachments = params.attachments ?? params.files;
     if (attachments) {
       const count = Array.isArray(attachments) ? attachments.length : 1;
-      summary += ` With ${count} attachment(s).`;
+      summary += lang === "es" ? ` Con ${count} adjunto(s).` : ` With ${count} attachment(s).`;
     }
     const body = params.body ?? params.text ?? params.html ?? "";
     if (typeof body === "string" && body.trim()) {
@@ -52,9 +56,12 @@ export function summarizeGuardedAction(
       if (preview.length > 200) {
         preview = `${preview.slice(0, 200)}…`;
       }
-      summary += ` Body preview: "${preview}"`;
+      summary += lang === "es" ? ` Vista previa del cuerpo: "${preview}"` : ` Body preview: "${preview}"`;
     }
     return summary;
+  }
+  if (lang === "es") {
+    return `Ejecutar ${skill}.${tool} con los datos indicados.`;
   }
   return `Run ${skill}.${tool} with the provided details.`;
 }
