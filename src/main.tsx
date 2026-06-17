@@ -480,6 +480,18 @@ function App() {
           </div>
         </div>
 
+        <SkillExplorer
+          catalog={catalog}
+          filteredTools={filteredTools}
+          lang={lang}
+          onSelectSkill={setSelectedSkill}
+          onUseTool={(skill, tool) => sendMessage(buildToolPrompt(skill, tool, lang))}
+          query={catalogQuery}
+          selectedSkill={selectedSkill}
+          selectedSkillData={selectedSkillData}
+          setQuery={setCatalogQuery}
+        />
+
         <div className="settings-block">
           <span>{t(lang, "model.label")}</span>
           <strong>{import.meta.env.VITE_MODEL_LABEL || t(lang, "model.fallback")}</strong>
@@ -500,18 +512,6 @@ function App() {
           <RotateCcw size={16} />
           {t(lang, "reset.label")}
         </button>
-
-        <SkillExplorer
-          catalog={catalog}
-          filteredTools={filteredTools}
-          lang={lang}
-          onSelectSkill={setSelectedSkill}
-          onUseTool={(skill, tool) => sendMessage(buildToolPrompt(skill, tool, lang))}
-          query={catalogQuery}
-          selectedSkill={selectedSkill}
-          selectedSkillData={selectedSkillData}
-          setQuery={setCatalogQuery}
-        />
 
         <PermissionPanel lang={lang} summary={permissionSummary} />
 
