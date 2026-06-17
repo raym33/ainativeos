@@ -32,6 +32,7 @@ The UI is bilingual (Spanish / English) with a language toggle.
 - Skill Forge with a reviewed draft → approve → install pipeline (nothing is installed or executed automatically).
 - Permission panel that shows ready and blocked skill families.
 - Session tool history for auditability.
+- Setup status checks for LM Studio, the selected model, the R catalog, the R bridge, Lexia, search, and workspace mode.
 - Minimal, responsive, bilingual UI with button tooltips.
 - Optional Docker runtime for isolating Node, Eve, Python, and R dependencies.
 
@@ -122,6 +123,14 @@ http://127.0.0.1:5173
 If Eve is not running at `http://127.0.0.1:3000`, change `VITE_EVE_TARGET` in `.env`.
 
 `npm run dev` opens Eve's interactive development mode. For a predictable local LM Studio start, `build` plus `start` is usually simpler.
+
+The first screen includes a setup status panel. It checks local runtime readiness through:
+
+```text
+http://127.0.0.1:5173/api/health
+```
+
+Use it to confirm LM Studio, the selected model, `public/r-catalog.json`, the Python R bridge, optional Lexia, web search configuration, and workspace mode.
 
 ## Run With Docker
 

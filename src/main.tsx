@@ -43,6 +43,20 @@ type RCatalog = {
   skills: RSkill[];
 };
 
+type HealthState = "ready" | "warning" | "offline" | "info";
+
+type HealthCheck = {
+  detail: string;
+  key: string;
+  label: string;
+  state: HealthState;
+};
+
+type HealthStatus = {
+  checks: HealthCheck[];
+  generatedAt: string;
+};
+
 type LocalizedAction = {
   title: string;
   description: string;
@@ -294,6 +308,8 @@ function App() {
   const [input, setInput] = useState("");
   const [catalog, setCatalog] = useState<RCatalog | null>(null);
   const [catalogQuery, setCatalogQuery] = useState("");
+  const [health, setHealth] = useState<HealthStatus | null>(null);
+  const [healthLoading, setHealthLoading] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<string>("pdf");
 
   const messages = agent.data.messages ?? [];
@@ -348,6 +364,35 @@ function App() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  async function refreshHealth() {
+    setHealthLoading(true);
+    try {
+      const response = await fetch("/api/health");
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      setHealth((await response.json()) as HealthStatus);
+    } catch {
+      setHealth({
+        generatedAt: new Date().toISOString(),
+        checks: [
+          {
+            key: "health",
+            label: "Health",
+            state: "warning",
+            detail: "Start the Vite web server to enable local diagnostics.",
+          },
+        ],
+      });
+    } finally {
+      setHealthLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void refreshHealth();
   }, []);
 
   const selectedSkillData = catalog?.skills.find((skill) => skill.name === selectedSkill);
@@ -499,6 +544,13 @@ function App() {
                   <span>{t(lang, "system.blockedByDefault")}</span>
                 </div>
               </section>
+
+              <HealthPanel
+                health={health}
+                lang={lang}
+                loading={healthLoading}
+                onRefresh={refreshHealth}
+              />
 
               <section className="forge-panel" aria-label={t(lang, "forge.heading")}>
                 <div>
@@ -801,6 +853,58 @@ function ToolLog({
   );
 }
 
+function HealthPanel({
+  health,
+  lang,
+  loading,
+  onRefresh,
+}: {
+  health: HealthStatus | null;
+  lang: Lang;
+  loading: boolean;
+  onRefresh: () => void;
+}) {
+  const checks = health?.checks ?? [];
+  const summary = summarizeHealth(checks);
+
+  return (
+    <section className="health-panel" aria-label={t(lang, "health.title")}>
+      <div className="health-header">
+        <div>
+          <p className="eyebrow">{t(lang, "health.eyebrow")}</p>
+          <h3>{t(lang, "health.title")}</h3>
+        </div>
+        <button
+          className="tooltip-control"
+          data-tooltip={t(lang, "health.refreshTooltip")}
+          disabled={loading}
+          onClick={onRefresh}
+          title={t(lang, "health.refreshTooltip")}
+          type="button"
+        >
+          <RotateCcw size={15} />
+          {loading ? t(lang, "health.checking") : t(lang, "health.refresh")}
+        </button>
+      </div>
+
+      <div className="health-summary">
+        <span className="ready">{summary.ready} {t(lang, "health.ready")}</span>
+        <span className="warning">{summary.warning} {t(lang, "health.needsSetup")}</span>
+      </div>
+
+      <div className="health-grid">
+        {(checks.length ? checks : placeholderHealth(lang)).map((check) => (
+          <div className={`health-check ${check.state}`} key={check.key}>
+            <span>{healthStateLabel(check.state, lang)}</span>
+            <strong>{localizedHealthLabel(check.label, lang)}</strong>
+            <p>{localizedHealthDetail(check, lang)}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SkillExplorer({
   catalog,
   filteredTools,
@@ -1046,6 +1150,72 @@ function stateClassName(state: string) {
     return "done";
   }
   return "running";
+}
+
+function summarizeHealth(checks: HealthCheck[]) {
+  return checks.reduce(
+    (summary, check) => {
+      if (check.state === "ready") {
+        summary.ready += 1;
+      } else if (check.state === "warning" || check.state === "offline") {
+        summary.warning += 1;
+      }
+      return summary;
+    },
+    { ready: 0, warning: 0 },
+  );
+}
+
+function placeholderHealth(lang: Lang): HealthCheck[] {
+  return [
+    {
+      key: "loading",
+      label: t(lang, "health.loadingLabel"),
+      state: "info",
+      detail: t(lang, "health.loadingDetail"),
+    },
+  ];
+}
+
+function healthStateLabel(state: HealthState, lang: Lang) {
+  if (state === "ready") {
+    return t(lang, "health.state.ready");
+  }
+  if (state === "warning") {
+    return t(lang, "health.state.warning");
+  }
+  if (state === "offline") {
+    return t(lang, "health.state.offline");
+  }
+  return t(lang, "health.state.info");
+}
+
+function localizedHealthLabel(label: string, lang: Lang) {
+  const key = `health.label.${label.toLowerCase().replace(/\s+/g, "")}`;
+  const value = t(lang, key);
+  return value === key ? label : value;
+}
+
+function localizedHealthDetail(check: HealthCheck, lang: Lang) {
+  if (check.key === "lexia" && check.state === "info") {
+    return t(lang, "health.detail.lexiaOptional");
+  }
+  if (check.key === "search" && check.detail === "DuckDuckGo fallback only") {
+    return t(lang, "health.detail.searchFallback");
+  }
+  if (check.key === "catalog" && check.detail === "Run npm run r:catalog") {
+    return t(lang, "health.detail.catalogMissing");
+  }
+  if (check.key === "bridge" && check.detail === "Run npm run r:install") {
+    return t(lang, "health.detail.bridgeMissing");
+  }
+  if (check.key === "bridge" && check.detail === "Python bridge files are present") {
+    return t(lang, "health.detail.bridgeReady");
+  }
+  if (check.key === "health") {
+    return t(lang, "health.detail.healthUnavailable");
+  }
+  return check.detail;
 }
 
 createRoot(document.getElementById("root")!).render(<App />);

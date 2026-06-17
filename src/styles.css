@@ -84,6 +84,7 @@ h3 {
 .permission-panel,
 .tool-event,
 .forge-panel,
+.health-panel,
 .pdf-workbench,
 .workflow-card,
 .system-strip div,
@@ -222,6 +223,7 @@ h3 {
 .skill-panel-header,
 .tool-log-header,
 .permission-title,
+.health-header,
 .pdf-workbench-header {
   display: flex;
   align-items: center;
@@ -516,6 +518,110 @@ h3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.health-panel {
+  display: grid;
+  gap: 11px;
+  padding: 13px;
+}
+
+.health-header h3 {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.health-header button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 32px;
+  border: 1px solid #d0d6dc;
+  border-radius: 8px;
+  background: #f7f9fa;
+  color: #263039;
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.health-header button:hover:not(:disabled) {
+  border-color: #aeb8c2;
+  background: #eef2f4;
+}
+
+.health-header button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.health-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.health-summary span,
+.health-check span {
+  width: fit-content;
+  border-radius: 8px;
+  padding: 3px 7px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.health-summary .ready,
+.health-check.ready span {
+  background: #eaf5ef;
+  color: #266448;
+}
+
+.health-summary .warning,
+.health-check.warning span,
+.health-check.offline span {
+  background: #fff3d6;
+  color: #845b00;
+}
+
+.health-check.info span {
+  background: #eef2f4;
+  color: #56616c;
+}
+
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.health-check {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid #e3e7eb;
+  border-radius: 8px;
+  background: #fafbfc;
+  padding: 10px;
+}
+
+.health-check strong {
+  color: #161a1f;
+  font-size: 13px;
+}
+
+.health-check p {
+  color: #69727c;
+  font-size: 12px;
+  line-height: 1.38;
+  overflow-wrap: anywhere;
+}
+
+.health-check.offline {
+  border-color: #f0c3be;
+  background: #fff7f6;
 }
 
 .system-strip div {
@@ -854,6 +960,7 @@ h3 {
     gap: 10px;
   }
 
+  .health-grid,
   .pdf-action-grid,
   .workflow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -885,6 +992,7 @@ h3 {
   }
 
   .system-strip,
+  .health-grid,
   .pdf-action-grid,
   .workflow-grid {
     grid-template-columns: 1fr;
