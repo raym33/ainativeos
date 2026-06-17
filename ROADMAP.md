@@ -2,6 +2,10 @@
 
 R Workbench is a local-first automation console for personal computers. The roadmap prioritizes trust, clarity, and useful vertical workflows before broad agent autonomy.
 
+## Who it is for
+
+R Workbench targets non-technical solo professionals (freelancers and small-business owners) who want to save time on everyday tasks: drafting simple emails, messaging, organizing and saving documents, light databases, client notes, and basic legal/admin lookups. The goal is that a user can ask for something in plain language and the workbench does it, or transparently tries and shows its work. It deliberately stays simpler than general-purpose agent frameworks: fewer knobs, plain-language intents, and visible, reviewable actions over raw autonomy.
+
 ## Phase 1: Local Foundation
 
 - LM Studio as the default local model endpoint.
@@ -33,6 +37,7 @@ Status: implemented in this starter.
 - Classify permissions before implementation.
 - Require human approval before installation.
 - Add reusable templates for document, web, file, data, and code skills.
+- Reviewed install pipeline: `list-drafts`, `inspect-draft`, `approve-draft`, `install-draft`. Installs copy a draft package into `installed-skills/` without ever importing or executing it; sensitive skills require explicit allowance, approval snapshots the signed permission profile, and draft names are validated against path traversal. **Implemented.**
 
 ## Phase 3: Research Workflows
 
@@ -44,6 +49,8 @@ Status: implemented in this starter.
 
 ## Phase 4: Permission System
 
+- Confirmation gate (bridge level): outward-facing and irreversible R tools (e.g. `email.send_email`, social posts, HTTP writes) never auto-execute. The bridge returns a `confirmationRequired` preview with a plain-language summary, and the tool runs only when the caller repeats the call with `confirm: true`. The guarded set is additive and cannot be weakened by configuration. **Implemented (v1).**
+- Real human-in-the-loop gating (UI level): the bridge boolean only prevents one-shot execution; it does not prove a human approved. Next step is to intercept the `confirmationRequired` payload in the UI and require an explicit user click (Confirm / Cancel) before the confirmed call is sent.
 - Per-tool permission prompts.
 - Allow once, allow for session, always allow, deny.
 - Workspace folder allowlist.

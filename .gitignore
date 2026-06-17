@@ -17,3 +17,4 @@ __pycache__
 *.pyc
 skill-drafts/*
 !skill-drafts/README.md
+installed-skills/
