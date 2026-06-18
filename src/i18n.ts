@@ -33,6 +33,8 @@ export function saveLang(lang: Lang): void {
 
 export const translations: Record<Lang, Record<string, string>> = {
   en: {
+    "welcome.greeting": "What can I help you with?",
+    "welcome.sub": "Ask in your own words. I'll tell you if I can do it and what I need — and I always ask before doing anything important.",
     "intent.title": "What do you want to do?",
     "intent.placeholder": "Describe it in your own words, e.g. \"summarize these PDFs\" or \"draft an email to a client\"",
     "intent.check": "Check",
@@ -65,7 +67,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     "brand.eyebrow": "Local workspace",
     "brand.subtitle": "Private automation console",
     "composer.pending": "Approve or cancel the pending action above to continue...",
-    "composer.placeholder": "Describe a task for Eve...",
+    "composer.placeholder": "Type what you need...",
     "composer.send": "Send",
     "composer.sendTooltip": "Send this task to the local agent.",
     "composer.stop": "Stop",
@@ -159,6 +161,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     "workbench.pdf.title": "PDF workbench",
   },
   es: {
+    "welcome.greeting": "¿En qué te ayudo?",
+    "welcome.sub": "Pídemelo con tus palabras. Te diré si puedo hacerlo y qué necesito, y siempre te pregunto antes de hacer algo importante.",
     "intent.title": "¿Qué quieres hacer?",
     "intent.placeholder": "Descríbelo con tus palabras, p. ej. \"resume estos PDFs\" o \"redacta un email a un cliente\"",
     "intent.check": "Comprobar",
@@ -191,7 +195,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     "brand.eyebrow": "Espacio de trabajo local",
     "brand.subtitle": "Consola privada de automatizacion",
     "composer.pending": "Aprueba o cancela la accion pendiente de arriba para continuar...",
-    "composer.placeholder": "Describe una tarea para Eve...",
+    "composer.placeholder": "Escribe lo que necesitas...",
     "composer.send": "Enviar",
     "composer.sendTooltip": "Enviar esta tarea al agente local.",
     "composer.stop": "Detener",

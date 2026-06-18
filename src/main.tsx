@@ -671,163 +671,23 @@ function App() {
       <section className="chat-panel" aria-label={t(lang, "aria.chat")}>
         <div className="messages">
           {messages.length === 0 ? (
-            <div className="empty-state dashboard">
-              <header className="dashboard-header">
-                <div>
-                  <p className="eyebrow">{t(lang, "dashboard.eyebrow")}</p>
-                  <h2>{t(lang, "dashboard.heading")}</h2>
-                </div>
-                <p>{t(lang, "dashboard.copy")}</p>
-              </header>
-
-              <IntentChecker
-                agentStatus={agent.status}
-                health={health}
-                lang={lang}
-                onAsk={(text) => sendMessage(text)}
-                onRunDiagnostics={refreshHealth}
-              />
-
-              <section className="system-strip" aria-label={t(lang, "aria.systemCapabilities")}>
-                <div>
-                  <strong>{catalog?.skillCount ?? "--"}</strong>
-                  <span>{t(lang, "system.skillsIndexed")}</span>
-                </div>
-                <div>
-                  <strong>{catalog?.toolCount ?? "--"}</strong>
-                  <span>{t(lang, "system.toolsAvailable")}</span>
-                </div>
-                <div>
-                  <strong>{permissionSummary?.blockedCount ?? "--"}</strong>
-                  <span>{t(lang, "system.blockedByDefault")}</span>
-                </div>
-              </section>
-
-              <HealthPanel
-                health={health}
-                lang={lang}
-                loading={healthLoading}
-                onRefresh={refreshHealth}
-              />
-
-              <section className="forge-panel" aria-label={t(lang, "forge.heading")}>
-                <div>
-                  <Sparkles size={18} />
-                  <div>
-                    <h3>{t(lang, "forge.heading")}</h3>
-                    <p>{skillForgeAction.description}</p>
-                  </div>
-                </div>
-                <button
-                  className="forge-button tooltip-control"
-                  data-tooltip={skillForgeAction.hint}
-                  disabled={agent.status !== "ready"}
-                  onClick={() => sendMessage(skillForgeAction.prompt)}
-                  title={skillForgeAction.hint}
-                  type="button"
-                >
-                  {skillForgeAction.title}
-                </button>
-              </section>
-
-              <section className="research-workbench" aria-label={t(lang, "research.title")}>
-                <div className="research-workbench-header">
-                  <Globe2 size={18} />
-                  <div>
-                    <h3>{t(lang, "research.title")}</h3>
-                    <p>{t(lang, "research.copy")}</p>
-                  </div>
-                </div>
-                <div className="research-action-grid">
-                  {RESEARCH_WORKFLOWS.map((workflow) => {
-                    const copy = workflow[lang];
-                    return (
-                      <button
-                        className="research-action tooltip-control"
-                        data-tooltip={copy.hint}
-                        disabled={agent.status !== "ready"}
-                        key={workflow.mode}
-                        onClick={() => sendMessage(copy.prompt)}
-                        title={copy.hint}
-                        type="button"
-                      >
-                        <span>{copy.title}</span>
-                        <strong>{workflow.mode}</strong>
-                        <p>{copy.description}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-
-              <ResearchCollections
-                lang={lang}
-                loading={researchNotesLoading}
-                note={selectedResearchNote}
-                notes={researchNotes?.notes ?? []}
-                onExport={(id, formats) => sendMessage(buildResearchExportPrompt(id, formats, lang))}
-                onOpen={openResearchNote}
-                onRefresh={refreshResearchNotes}
-                root={researchNotes?.root ?? ""}
-              />
-
-              <section className="pdf-workbench" aria-label={t(lang, "workbench.pdf.title")}>
-                <div className="pdf-workbench-header">
-                  <FileText size={18} />
-                  <div>
-                    <h3>{t(lang, "workbench.pdf.title")}</h3>
-                    <p>{t(lang, "workbench.pdf.copy")}</p>
-                  </div>
-                </div>
-                <div className="pdf-action-grid">
-                  {PDF_WORKFLOWS.map((workflow) => {
-                    const copy = workflow[lang];
-                    return (
-                      <button
-                        className="pdf-action tooltip-control"
-                        data-tooltip={copy.hint}
-                        disabled={agent.status !== "ready"}
-                        key={copy.title}
-                        onClick={() => sendMessage(copy.prompt)}
-                        title={copy.hint}
-                        type="button"
-                      >
-                        <span>{copy.title}</span>
-                        <strong>{workflow.tool}</strong>
-                        <p>{copy.description}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-
-              <section className="workflow-grid" aria-label={t(lang, "aria.coreFunctions")}>
-                {WORKFLOWS.map((workflow) => {
-                  const copy = workflow[lang];
-                  return (
+            <div className="welcome">
+              <div className="welcome-inner">
+                <h2 className="welcome-greeting">{t(lang, "welcome.greeting")}</h2>
+                <p className="welcome-sub">{t(lang, "welcome.sub")}</p>
+                <div className="welcome-chips">
+                  {INTENT_EXAMPLES.map((example) => (
                     <button
-                      className="workflow-card tooltip-control"
-                      data-tooltip={copy.hint}
+                      className="welcome-chip"
                       disabled={agent.status !== "ready"}
-                      key={copy.title}
-                      onClick={() => sendMessage(copy.prompt)}
-                      title={copy.hint}
+                      key={example.en}
+                      onClick={() => sendMessage(example[lang])}
                       type="button"
                     >
-                      <workflow.icon size={19} />
-                      <span>{copy.title}</span>
-                      <p>{copy.description}</p>
+                      {example[lang]}
                     </button>
-                  );
-                })}
-              </section>
-              <div className="trust-strip">
-                {TRUST_POINTS.map((point) => (
-                  <span key={point.en}>
-                    <ShieldCheck size={14} />
-                    {point[lang]}
-                  </span>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -845,26 +705,6 @@ function App() {
             part={pendingApproval}
           />
         ) : null}
-
-        <div className="quickbar" aria-label={t(lang, "quickActions.aria")}>
-          {WORKFLOWS.slice(0, 4).map((workflow) => {
-            const copy = workflow[lang];
-            return (
-              <button
-                className="tooltip-control"
-                data-tooltip={copy.hint}
-                disabled={agent.status !== "ready" || Boolean(pendingApproval)}
-                key={copy.title}
-                onClick={() => sendMessage(copy.prompt)}
-                title={copy.hint}
-                type="button"
-              >
-                <workflow.icon size={15} />
-                {copy.title}
-              </button>
-            );
-          })}
-        </div>
 
         <form className="composer" onSubmit={onSubmit}>
           <textarea
