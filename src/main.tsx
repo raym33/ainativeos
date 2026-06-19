@@ -238,15 +238,20 @@ type FilePreview =
   | { kind: "error"; error?: string };
 
 const EXPLORER_PATH_KEY = "ainativeos.explorer.path";
-type OsWindowId = "programs" | "explorer";
+const OS_SESSION_KEY = "ainativeos.os.session";
+const OS_VERSION = "0.1 (preview)";
+type OsWindowId = "programs" | "explorer" | "about";
 type OsWindowState = { id: OsWindowId; z: number; x: number; y: number; minimized: boolean };
+type PersistedOsWindowState = Pick<OsWindowState, "id" | "x" | "y" | "minimized">;
 
 const WINDOW_TITLES: Record<OsWindowId, Record<Lang, string>> = {
   programs: { es: "Programas", en: "Programs" },
   explorer: { es: "Explorador", en: "Explorer" },
+  about: { es: "Acerca de", en: "About" },
 };
 
 const INITIAL_WINDOWS: OsWindowState[] = [{ id: "programs", z: 1, x: 116, y: 28, minimized: false }];
+const KNOWN_WINDOW_IDS = new Set<OsWindowId>(["programs", "explorer", "about"]);
 
 function OsDesktop({
   lang,
@@ -259,12 +264,21 @@ function OsDesktop({
   onLaunch: (app: OsApp) => void;
   onPrompt: (text: string) => void;
 }) {
-  const [windows, setWindows] = useState<OsWindowState[]>(INITIAL_WINDOWS);
-  const [zCounter, setZCounter] = useState(2);
+  const [windows, setWindows] = useState<OsWindowState[]>(readStoredOsSession);
+  const [zCounter, setZCounter] = useState(() => Math.max(...readStoredOsSession().map((windowState) => windowState.z), 0) + 1);
   const [clock, setClock] = useState(() => formatClock());
   const [startOpen, setStartOpen] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const desktopApps = useMemo(() => OS_APPS.filter((app) => app.onDesktop), []);
+
+  useEffect(() => {
+    try {
+      const payload: PersistedOsWindowState[] = windows.map(({ id, x, y, minimized }) => ({ id, x, y, minimized }));
+      localStorage.setItem(OS_SESSION_KEY, JSON.stringify(payload));
+    } catch {
+      // Keep the desktop usable even when browser storage is unavailable.
+    }
+  }, [windows]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setClock(formatClock()), 60_000);
@@ -284,7 +298,7 @@ function OsDesktop({
       if (existing) {
         return current.map((windowState) => windowState.id === id ? { ...windowState, minimized: false, z } : windowState);
       }
-      const position = id === "explorer" ? { x: 132, y: 84 } : { x: 116, y: 28 };
+      const position = getDefaultWindowPosition(id);
       return [...current, { id, z, minimized: false, ...position }];
     });
   }
@@ -453,6 +467,40 @@ function OsDesktop({
             );
           }
 
+          if (windowState.id === "about") {
+            return (
+              <section
+                className="os-window os-about"
+                key={windowState.id}
+                onPointerDown={() => focusWindow(windowState.id)}
+                style={style}
+              >
+                <div className="os-titlebar" onPointerDown={(event) => startDrag(event, windowState)}>
+                  <span>{t(lang, "os.about.title")}</span>
+                  <div className="os-titlebar-actions">
+                    <button className="os-min" onClick={() => minimizeWindow("about")} type="button" aria-label={t(lang, "os.min")}>
+                      _
+                    </button>
+                    <button className="os-close" onClick={() => closeWindow("about")} type="button" aria-label={t(lang, "os.close")}>
+                      ✕
+                    </button>
+                  </div>
+                </div>
+                <div className="os-window-body">
+                  <strong className="os-about-name">AI Native OS</strong>
+                  <p className="os-about-tagline">{t(lang, "os.about.tagline")}</p>
+                  <p className="os-about-version">
+                    {t(lang, "os.about.version")}: {OS_VERSION}
+                  </p>
+                  <p className="os-about-credits">{t(lang, "os.about.credits")}</p>
+                  <button className="os-raised-button" onClick={() => closeWindow("about")} type="button">
+                    {t(lang, "os.about.ok")}
+                  </button>
+                </div>
+              </section>
+            );
+          }
+
           return (
             <FileExplorer
               key={windowState.id}
@@ -502,6 +550,21 @@ function OsDesktop({
             <span>{t(lang, "os.programs")}</span>
           </button>
           <div className="os-start-menu-separator" role="separator" />
+          <button
+            className="os-start-menu-row"
+            onClick={() => {
+              openWindow("about");
+              setStartOpen(false);
+            }}
+            role="menuitem"
+            type="button"
+          >
+            {(() => {
+              const Icon = OS_ICONS.document;
+              return <Icon size={24} />;
+            })()}
+            <span>{t(lang, "os.about")}</span>
+          </button>
           <button
             className="os-start-menu-row os-start-menu-exit"
             onClick={onClose}
@@ -828,6 +891,62 @@ function getTaskbarWindowIds(windows: OsWindowState[]): OsWindowId[] {
     ids.add(windowState.id);
   }
   return [...ids];
+}
+
+function getDefaultWindowPosition(id: OsWindowId): Pick<OsWindowState, "x" | "y"> {
+  if (id === "explorer") {
+    return { x: 132, y: 84 };
+  }
+  if (id === "about") {
+    return { x: 300, y: 120 };
+  }
+  return { x: 116, y: 28 };
+}
+
+function isOsWindowId(value: unknown): value is OsWindowId {
+  return typeof value === "string" && KNOWN_WINDOW_IDS.has(value as OsWindowId);
+}
+
+function readStoredOsSession(): OsWindowState[] {
+  try {
+    const raw = localStorage.getItem(OS_SESSION_KEY);
+    if (!raw) {
+      return INITIAL_WINDOWS;
+    }
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      return INITIAL_WINDOWS;
+    }
+    const seen = new Set<OsWindowId>();
+    const windows: OsWindowState[] = [];
+    for (const item of parsed) {
+      if (!item || typeof item !== "object") {
+        continue;
+      }
+      const candidate = item as Partial<PersistedOsWindowState>;
+      if (
+        isOsWindowId(candidate.id) &&
+        !seen.has(candidate.id) &&
+        typeof candidate.x === "number" &&
+        Number.isFinite(candidate.x) &&
+        typeof candidate.y === "number" &&
+        Number.isFinite(candidate.y) &&
+        typeof candidate.minimized === "boolean"
+      ) {
+        seen.add(candidate.id);
+        windows.push({
+          id: candidate.id,
+          x: candidate.x,
+          y: candidate.y,
+          minimized: candidate.minimized,
+          z: windows.length + 1,
+        });
+      }
+    }
+    return windows.length > 0 ? windows : INITIAL_WINDOWS;
+  } catch {
+    return INITIAL_WINDOWS;
+  }
 }
 
 function readStoredExplorerPath() {

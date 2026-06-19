@@ -1748,6 +1748,43 @@ h3 {
   width: min(780px, calc(100% - 44px));
 }
 
+.os-about {
+  width: min(360px, calc(100vw - 44px));
+}
+
+.os-about .os-window-body {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  padding: 18px 20px 16px;
+  text-align: center;
+}
+
+.os-about-name {
+  display: block;
+  font-size: 20px;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.os-about-tagline {
+  color: #404040;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.os-about-version,
+.os-about-credits {
+  color: #202020;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.os-about .os-raised-button {
+  min-width: 82px;
+  margin-top: 4px;
+}
+
 .os-taskbar {
   position: fixed;
   z-index: 3000;
@@ -2155,8 +2192,14 @@ h3 {
   }
 
   .os-program-manager,
-  .os-explorer {
+  .os-explorer,
+  .os-about {
     max-width: calc(100vw - 24px);
+  }
+
+  .os-about {
+    left: 88px !important;
+    width: calc(100vw - 100px);
   }
 
   .explorer-toolbar {
