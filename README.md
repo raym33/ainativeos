@@ -80,11 +80,13 @@ curl http://127.0.0.1:1234/v1/models
 
 Copy the model `id` into `.env`.
 
-**Recommended models.** AI Native OS relies on reliable tool calling, so pick a model that supports it well. Good local options:
+**Recommended models.** AI Native OS relies on reliable tool calling, so pick a model that supports it well. **Qwen models are the recommended default** because their output is clean:
 
 - `qwen2.5-7b-instruct` — small, fast, dependable tool calling. A good default.
 - `qwen3.5-9b` or a larger Qwen — stronger reasoning if your machine can run it.
 - Any LM Studio / Ollama-compatible model with solid function-calling support.
+
+**Note on Gemma.** `gemma-4-26b-a4b` (tested via `npm run doctor:lmstudio` and `npm run doctor:eve`) does call tools correctly, but its replies currently leak Gemma channel/thought control tokens (e.g. `<|channel|>...`) into the visible answer because LM Studio/Eve does not separate those channels. Prefer a Qwen model for a clean chat experience until that is addressed.
 
 After starting LM Studio, verify the whole stack at once with `npm run doctor` (see [Diagnostics](#diagnostics)).
 
